@@ -209,3 +209,5 @@ __marimo__/
 # Other
 lora_model_medical/
 outputs/
+models/
+offload_*
