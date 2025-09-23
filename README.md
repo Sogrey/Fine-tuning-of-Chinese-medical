@@ -33,7 +33,7 @@ git clone --recursive https://github.com/Sogrey/Fine-tuning-of-Chinese-medical.g
 
 ### 2. 下载模型
 
-下载Lora模型并放在 `lora_model_medical` 目录下。
+下载基座模型和Lora模型并放在 `models` 目录下。
 
 运行：
 
@@ -44,9 +44,9 @@ python .\01_download_model.py
 ### 3. 运行测试
 
 ```bash
-python .\02_test_model_GPU8G.py  # 适用于8GB GPU
+python .\02_test_model_GPU8G.py  # 适用于8GB GPU，低显存
 # 或
-python .\02_test_model_GPU16G.py  # 适用于16GB GPU
+python .\02_test_model_GPU16G.py  # 适用于16+GB GPU
 ```
 
 ## 项目结构
