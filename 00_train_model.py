@@ -1,9 +1,20 @@
-# pip install unsloth
 
-# 导入必要的库
+
+# Step1 下载数据集
+# git clone https://github.com/Sogrey/Chinese-medical-dialogue-data.git Chinese-medical-dialogue-data
+
+# pip install modelscope -i https://pypi.tuna.tsinghua.edu.cn/simple
+# https://modelscope.cn/
+# Step2 下载 qwen3-4B
+from modelscope import snapshot_download
+model_dir = snapshot_download('Qwen/Qwen3-4B', cache_dir='./models')
+
+# Step3 导入必要的库
+# pip install unsloth
 from unsloth import FastLanguageModel
 import torch
 
+# Step4 测试环境
 """ 测试环境 """
 print("PyTorch 版本:", torch.__version__)
 print("CUDA 是否可用:", torch.cuda.is_available())  # 应输出 True
@@ -15,12 +26,12 @@ print(torch.version.cuda)       # CUDA 版本
 print(torch.backends.cudnn.enabled)  # 是否启用 cuDNN
 """ 测试环境 结束 """
 
-# 设置模型参数
+# Step5 设置模型参数
 max_seq_length = 2048  # 设置最大序列长度，支持 RoPE 缩放
 dtype = None  # 数据类型，None 表示自动检测。Tesla T4 使用 Float16，Ampere+ 使用 Bfloat16
 load_in_4bit = True  # 使用 4bit 量化来减少内存使用
 
-# 加载预训练模型和分词器
+# Step6 加载预训练模型和分词器
 model, tokenizer = FastLanguageModel.from_pretrained(
     model_name = "./models/Qwen/Qwen3-4B",  # 使用Qwen3-4B模型
     max_seq_length = max_seq_length,
@@ -28,7 +39,7 @@ model, tokenizer = FastLanguageModel.from_pretrained(
     load_in_4bit = load_in_4bit,
 )
 
-# 添加LoRA适配器，只需要更新1-10%的参数
+# Step7 添加LoRA适配器，只需要更新1-10%的参数
 model = FastLanguageModel.get_peft_model(
     model,
     r = 16,  # LoRA秩，建议使用8、16、32、64、128
@@ -43,7 +54,7 @@ model = FastLanguageModel.get_peft_model(
     loftq_config = None,  # LoftQ配置
 )
 
-# 数据准备
+# Step8 数据准备
 import os
 import pandas as pd
 from datasets import Dataset
@@ -104,6 +115,7 @@ def load_medical_data(data_dir):
                 
                 # 打印列名，帮助调试
                 print(f"文件 {csv_file} 的列名: {df.columns.tolist()}")
+                # department,title,ask,answer
                 
                 # 处理每一行数据
                 for _, row in df.iterrows():
@@ -172,7 +184,7 @@ def formatting_prompts_func(examples):
 dataset = load_medical_data("Chinese-medical-dialogue-data/Data_数据")
 dataset = dataset.map(formatting_prompts_func, batched=True)
 
-# 定义训练参数 训练模型
+# Step9 定义训练参数 训练模型
 from trl import SFTTrainer
 from transformers import TrainingArguments
 from unsloth import is_bfloat16_supported
@@ -219,7 +231,7 @@ print(f"{start_gpu_memory} GB of memory reserved.")
 """ 显示当前GPU内存状态 结束 """
 
 
-# 开始训练
+# Step10 开始训练
 trainer_stats = trainer.train()
 
 """ 显示训练后的内存和时间统计 """
@@ -236,7 +248,7 @@ print(f"Peak reserved memory for training % of max memory = {lora_percentage} %.
 """ 显示训练后的内存和时间统计 结束"""
 
 
-### 微调模型保存
+# Step11 微调模型保存
 ## **[注意]** 这里只是LoRA参数，不是完整模型。
 model.save_pretrained("Chinese-medical-lora")  # 本地保存
 tokenizer.save_pretrained("Chinese-medical-lora")
