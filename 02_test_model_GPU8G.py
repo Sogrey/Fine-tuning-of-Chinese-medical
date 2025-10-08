@@ -13,7 +13,7 @@ LoRA适配器路径: models/Sogrey/Chinese-medical-lora
 Loading checkpoint shards: 100%|██████████████████████████████████████████████████████| 3/3 [00:27<00:00,  9.24s/it]
 ✅ 模型加载完成！当前显存使用：2.61GB
 
-患者提问: 我最近总是感觉头晕，应该怎么办？
+患者提问: 请问慢性肾炎患者能吃豆腐吗？
 
 AI医生思考中...请问慢性肾炎患者能吃豆腐吗？
 
@@ -178,7 +178,7 @@ if __name__ == "__main__":
             if question.lower() in ['exit', 'quit', 'q']:
                 break
                 
-            print("\nAI医生思考中...", end="", flush=True)
+            print("\nAI医生思考中...\n", end="", flush=True)
             
             try:
                 # 流式输出

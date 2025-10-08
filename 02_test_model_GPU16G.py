@@ -132,7 +132,7 @@ if __name__ == "__main__":
             if question.lower() in ['exit', 'quit', 'q']:
                 break
                 
-            print("\nAI医生思考中...", end="", flush=True)
+            print("\nAI医生思考中...\n", end="", flush=True)
             
             try:
                 # 流式输出
